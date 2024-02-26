@@ -669,10 +669,18 @@ class O3deTools(Panel):
                 export_files_row.enabled = True
             # Final Export Files Button
             export_files_row.operator('vin.report_card_button', text='EXPORT TO O3DE', icon="BLENDER")
+        
+            export_collection_row=layout.row()
+            export_collection_row.enabled=True
+            # export_collection_row.label(text='Export Collection')
+            export_collection_row.operator('vin.report_card_button', text='EXPORT COLLECTION', icon="BLENDER")
+            
         else:
             # If O3DE is not installed we tell the user
             row.operator("vin.wiki", text='O3DE Tools Wiki', icon="WORLD_DATA")
             not_installed = layout.row()
             not_installed.label(text='O3DE Needs to be installed')
+            
+
             
 

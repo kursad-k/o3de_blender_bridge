@@ -45,6 +45,11 @@ bl_info = {
     "category": "Import-Export",
 }  # This is needed for Blender Plugin
 
+
+import sys
+import importlib
+
+from re import A
 from typing import Any
 import bpy
 from bpy.props import EnumProperty, PointerProperty
@@ -53,9 +58,24 @@ from pathlib import Path
 # Needed to import custom scripts in Blender Python
 directory = Path.cwd()
 sys.path += [str(directory)]
+
+
 from . import o3de_utils
 from . import ui
 from . import constants
+
+
+if locals().get('loaded'):
+    loaded = False
+    from importlib import reload
+    from sys import modules
+
+    modules[__name__] = reload(modules[__name__])
+    for name, module in modules.items():
+        if name.startswith(f"{__package__}."):
+            globals()[name] = reload(module)
+    del reload, modules
+
 
 
 def register():
@@ -145,3 +165,5 @@ def unregister():
 
 if __name__ == "__main__":
     register()
+
+loaded = True
