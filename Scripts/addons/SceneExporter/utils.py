@@ -557,3 +557,11 @@ def check_selected_transforms():
         location_good = True
         rotation_good = True
         scale_good = True
+        
+        
+
+def get_active_colletion():
+
+    active_collection = bpy.context.collection
+    print(active_collection.name)
+    return active_collection
