@@ -35,7 +35,7 @@
 
 bl_info = {
     "name": "O3DE_DCCSI_BLENDER_SCENE_EXPORTER",
-    "author": "shawstar@amazon",
+    "author": "kursad-k, shawstar@amazon(original maintainer)",
     "version": (1, 5),
     "blender": (3, 00, 0),
     "location": "",
