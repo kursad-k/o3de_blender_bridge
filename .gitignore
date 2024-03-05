@@ -8,3 +8,7 @@ settings.local.json
 .env
 settings_export.json.tmp
 Env_Dev.bat
+*.blend1
+*.blend2
+*.blend3
+*.backup

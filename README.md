@@ -1,5 +1,8 @@
 **Forked from https://github.com/o3de/o3de**
 
+
+
+
 # O3DE DCCsi, DCC Blender
 
 The "DccScriptingInterface" (aka DCCsi) is a Gem for O3DE to extend and interface with dcc tools in the python ecosystem.  This document contains the details of configuration of Maya as a DCC tool to be used with O3DE.  This sets up Blender to be integrated with O3DE in a managed way, via the DCCsi. For more information about the DCCis please see the readme.md at the root of the Gem.
@@ -41,7 +44,7 @@ In the root folder of the DCCsi are a few useful utilities and files to make not
 4. Notes:
    
    1. If Blender was already running you will need to restart it.
-   2. Remember, this is an experimental prototype.  If you encounter errors, make sure you are signed into github and create an O3DE GitHub Issue, log a bug or feature request: [o3de GHI link](https://github.com/o3de/o3de/issues/new/choose) and assign the label [feature/tech-art]([Issues · o3de/o3de · GitHub](https://github.com/o3de/o3de/labels/feature%2Ftech-art)) 
+   2. Remember, this is an experimental prototype.  If you encounter errors, make sure you are signed into github and create an O3DE GitHub Issue, log a bug or feature request: [o3de GHI link](https://github.com/o3de/o3de/issues/new/choose) and assign the label [feature/tech-art]([Issues · o3de/o3de · GitHub](https://github.com/o3de/o3de/labels/feature%2Ftech-art)) 
 
 ### If you are an End User...
 
@@ -57,15 +60,15 @@ From .bat file, double-click the following file type to start Maya: `C:\path\to\
 
 To start from script:
 
-    1. Open a Windows Command Prompt (CMD)
+    1. Open a Windows Command Prompt (CMD)
 
-    2. Change directory to: 
+    2. Change directory to: 
 
 ```batch
 cd C:\path\to\o3de\Gems\AtomLyIntegration\TechnicalArt\DccScriptingInterface
 ```
 
-    3. Run the Blender `start.py` script:
+    3. Run the Blender `start.py` script:
 
 ```batch
 .\python Tools\DCC\Blender\start.py
@@ -78,15 +81,15 @@ start.py is the same setup that the Editor uses to start the external DCC applic
 
 To generate a `settings.local.json` (which you can then modify with overrides to paths and other settings)::
 
-    1. Open a Windows Command Prompt (CMD)
+    1. Open a Windows Command Prompt (CMD)
 
-    2. Change directory to: 
+    2. Change directory to: 
 
 ```batch
 cd C:\path\to\o3de\Gems\AtomLyIntegration\TechnicalArt\DccScriptingInterface
 ```
 
-    3. Run the Blender `config.py` script:
+    3. Run the Blender `config.py` script:
 
 ```batch
 python Tools\DCC\Blender\config.py
