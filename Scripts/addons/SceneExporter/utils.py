@@ -560,8 +560,9 @@ def check_selected_transforms():
         
         
 
-def get_active_colletion():
-
+def get_active_collection():
+    """This will get the currently active collection in the scene's outliner
+    """
     active_collection = bpy.context.collection
     print(active_collection.name)
     return active_collection
@@ -569,6 +570,8 @@ def get_active_colletion():
 
 
 def getCollectionList(scene, context):
+    """This is a callback function to build the list of collections in the Blender file
+    """
     items = []
     cols=[c for c in bpy.data.collections]
     
