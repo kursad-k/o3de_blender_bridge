@@ -576,7 +576,5 @@ def getCollectionList(scene, context):
         for c in cols:
             items.append((f"{c}", f"{c.name}", f"{c}"))
             print(c)
-    # else:
-    #     items.append(("2","NotMeshList","This is a non-mesh list."))
         
     return items
