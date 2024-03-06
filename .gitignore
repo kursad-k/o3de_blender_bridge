@@ -12,3 +12,6 @@ Env_Dev.bat
 *.blend2
 *.blend3
 *.backup
+*.fbx
+*.gltf
+*.glb

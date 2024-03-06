@@ -23,6 +23,15 @@ from . import utils
 import addon_utils
 
 
+#Scene Props
+def register_props():
+    bpy.types.Scene.o3de_export_collection = bpy.props.EnumProperty(name="export_colection",
+                                                                description="collection to export",items=utils.getCollectionList)
+
+
+
+
+
 def message_box(message = "", title = "Message Box", icon = 'LIGHT'):
     """!
     This function will show a messagebox to inform user.
@@ -508,7 +517,7 @@ class O3deTools(Panel):
     def draw(self, context):
         """!
         This function draws this gui element in Blender UI. We will look at the Look at the
-        o3de engine manifest to see if o3de is currently install and gather the project paths
+        o3de engine manifest to see if o3de is currently installed and gather the project paths
         in a list drop down.
         """
         layout = self.layout
@@ -673,7 +682,12 @@ class O3deTools(Panel):
             export_collection_row=layout.row()
             export_collection_row.enabled=True
             # export_collection_row.label(text='Export Collection')
+            # export_collection_row.operator('vin.report_card_button', text='EXPORT COLLECTION', icon="BLENDER")
+            export_collection_row.prop(context.scene, "o3de_export_collection", text='EXPORT COLLECTION', icon="COLLECTION_COLOR_04")
+            export_collection_row=layout.row()
+            export_collection_row.enabled=True
             export_collection_row.operator('vin.report_card_button', text='EXPORT COLLECTION', icon="BLENDER")
+            
             
         else:
             # If O3DE is not installed we tell the user

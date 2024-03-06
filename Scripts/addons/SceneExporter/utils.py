@@ -565,3 +565,18 @@ def get_active_colletion():
     active_collection = bpy.context.collection
     print(active_collection.name)
     return active_collection
+
+
+
+def getCollectionList(scene, context):
+    items = []
+    cols=[c for c in bpy.data.collections]
+    
+    if cols:
+        for c in cols:
+            items.append((f"{c}", f"{c.name}", f"{c}"))
+            print(c)
+    # else:
+    #     items.append(("2","NotMeshList","This is a non-mesh list."))
+        
+    return items

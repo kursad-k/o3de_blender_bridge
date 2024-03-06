@@ -123,6 +123,10 @@ def register():
     bpy.types.Scene.export_option_gui = False
     bpy.types.Scene.convert_mesh_to_triangles = True
     
+    ## Refactoring starts here
+    ui.register_props()
+    
+    
 def unregister():
     """! This is the function that will unregister Classes and Global Vars for this plugin
     """
