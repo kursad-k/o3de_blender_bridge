@@ -1,13 +1,13 @@
 **Forked from https://github.com/o3de/o3de**
 
-This repository is for continuing the work on the O3DE->Blender bridge. This add-on currently is WIP. The plan for the next version version is outlined below.
+This repository is for continuing the work on the O3DE->Blender bridge. This add-on currently is WIP. The plan for the next version is outlined below.
 
 
 - [ ] Version bumps and Blender 4.x compatibility enhancement
 
 - [ ] Change the license to Blender compliant GPL license
 
-- [ ] Collection based workflow
+- [ ] Collections based workflow
 
 - [ ] GLTF support
 
