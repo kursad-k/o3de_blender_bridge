@@ -56,8 +56,6 @@ from bpy.props import EnumProperty, PointerProperty
 import sys
 from pathlib import Path
 # Needed to import custom scripts in Blender Python
-directory = Path.cwd()
-sys.path += [str(directory)]
 
 
 from . import o3de_utils
@@ -91,9 +89,8 @@ classes = (
     ui.SceneExporterFileMenu,
     ui.ExportOptionsListDropDown,
     ui.AnimationOptionsListDropDown,
-    ui.O3DE_OP_Export,
+    ui.O3DE_OP_Export_Selected,
 )
-
 
 
 def register():
@@ -114,81 +111,39 @@ def register():
     # bpy.utils.register_class(ui.ExportOptionsListDropDown)
     # bpy.utils.register_class(ui.AnimationOptionsListDropDown)
     
+    ## Refactoring starts here
     from bpy.utils import register_class
     for cls in classes:
         register_class(cls)
     
-    bpy.types.Scene.plugin_directory = str(directory)
-    bpy.types.Scene.export_file_name_o3de = bpy.props.StringProperty(
-        name="",
-        description="Export File Name",
-        default="o3de_export"
-    )
-    bpy.types.TOPBAR_MT_file_export.append(ui.file_export_menu_add)  # Blender Specific Class and Naming Convention. 
-    bpy.types.Scene.selected_o3de_project_path = ''
-    bpy.types.Scene.pop_up_notes = ''
-    bpy.types.Scene.pop_up_confirm_label = ''
-    bpy.types.Scene.pop_up_question_label = ''
-    bpy.types.Scene.pop_up_question_bool = False
-    bpy.types.Scene.pop_up_type = ''
-    bpy.types.Scene.udp_type = ''
-    bpy.types.Scene.export_textures_folder = True
-    bpy.types.Scene.animation_export = constants.NO_ANIMATION
-    bpy.types.Scene.file_menu_animation_export = False
-    bpy.types.Scene.export_good_o3de = True
-    bpy.types.Scene.multi_file_export_o3de = False
-    bpy.types.Scene.stored_image_source_paths = {}
-    bpy.types.Scene.o3de_projects_list = EnumProperty(items=o3de_utils.build_projects_list(), name='')
-    bpy.types.Scene.texture_options_list = EnumProperty(items=constants.EXPORT_LIST_OPTIONS, name='', default='0')
-    bpy.types.Scene.animation_options_list = EnumProperty(items=constants.ANIMATION_LIST_OPTIONS, name='', default='0')
-    bpy.types.WindowManager.multi_file_export_toggle = bpy.props.BoolProperty()
-    bpy.types.WindowManager.mesh_triangle_export_toggle = bpy.props.BoolProperty()
-    bpy.types.Scene.export_option_gui = False
-    bpy.types.Scene.convert_mesh_to_triangles = True
-    
-    ## Refactoring starts here
     ui.register_props()
     
+    bpy.types.TOPBAR_MT_file_export.append(ui.file_export_menu_add)  # Blender Specific Class and Naming Convention. 
     
 def unregister():
     """! This is the function that will unregister Classes and Global Vars for this plugin
     """
-    del bpy.types.Scene.plugin_directory
-    bpy.utils.unregister_class(ui.O3deTools)
-    bpy.utils.unregister_class(ui.MessageBox)
-    bpy.utils.unregister_class(ui.MessageBoxConfirm)
-    bpy.utils.unregister_class(ui.ReportCard)
-    bpy.utils.unregister_class(ui.ReportCardButton)
-    bpy.utils.unregister_class(ui.WikiButton)
-    bpy.utils.unregister_class(ui.CustomProjectPath)
-    bpy.utils.unregister_class(ui.AddColliderMesh)
-    bpy.utils.unregister_class(ui.AddLODMesh)
-    bpy.utils.unregister_class(ui.ProjectsListDropDown)
-    bpy.utils.unregister_class(ui.SceneExporterFileMenu)
-    bpy.utils.unregister_class(ui.ExportOptionsListDropDown)
-    bpy.utils.unregister_class(ui.AnimationOptionsListDropDown)
+    
+    from bpy.utils import unregister_class
+    for cls in reversed(classes):
+        unregister_class(cls)
+    
+    ui.delete_props()
+    # bpy.utils.unregister_class(ui.O3deTools)
+    # bpy.utils.unregister_class(ui.MessageBox)
+    # bpy.utils.unregister_class(ui.MessageBoxConfirm)
+    # bpy.utils.unregister_class(ui.ReportCard)
+    # bpy.utils.unregister_class(ui.ReportCardButton)
+    # bpy.utils.unregister_class(ui.WikiButton)
+    # bpy.utils.unregister_class(ui.CustomProjectPath)
+    # bpy.utils.unregister_class(ui.AddColliderMesh)
+    # bpy.utils.unregister_class(ui.AddLODMesh)
+    # bpy.utils.unregister_class(ui.ProjectsListDropDown)
+    # bpy.utils.unregister_class(ui.SceneExporterFileMenu)
+    # bpy.utils.unregister_class(ui.ExportOptionsListDropDown)
+    # bpy.utils.unregister_class(ui.AnimationOptionsListDropDown)
+    
     bpy.types.TOPBAR_MT_file_export.remove(ui.file_export_menu_add)  # Blender Specific Class and Naming Convention. 
-    del bpy.types.Scene.export_file_name_o3de
-    del bpy.types.Scene.pop_up_notes
-    del bpy.types.Scene.pop_up_confirm_label
-    del bpy.types.Scene.pop_up_question_label
-    del bpy.types.Scene.pop_up_question_bool
-    del bpy.types.Scene.pop_up_type
-    del bpy.types.Scene.udp_type
-    del bpy.types.Scene.selected_o3de_project_path
-    del bpy.types.Scene.o3de_projects_list
-    del bpy.types.Scene.texture_options_list
-    del bpy.types.Scene.animation_options_list
-    del bpy.types.Scene.export_good_o3de
-    del bpy.types.Scene.multi_file_export_o3de
-    del bpy.types.Scene.export_textures_folder
-    del bpy.types.Scene.animation_export
-    del bpy.types.Scene.file_menu_animation_export
-    del bpy.types.Scene.stored_image_source_paths
-    del bpy.types.WindowManager.multi_file_export_toggle
-    del bpy.types.Scene.export_option_gui
-    del bpy.types.WindowManager.mesh_triangle_export_toggle
-    del bpy.types.Scene.convert_mesh_to_triangles
 
 if __name__ == "__main__":
     register()

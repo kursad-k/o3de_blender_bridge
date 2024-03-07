@@ -9,6 +9,8 @@
 #
 # -------------------------------------------------------------------------
 from multiprocessing import context
+import sys
+from pathlib import Path
 import bpy
 from pathlib import Path
 import webbrowser
@@ -16,11 +18,15 @@ import re
 from bpy_extras.io_utils import ExportHelper, ImportHelper
 from bpy.types import Panel, Operator, PropertyGroup, AddonPreferences
 from bpy.props import EnumProperty, StringProperty, BoolProperty, PointerProperty
-from . import constants
+from . import A, constants
 from . import fbx_exporter
 from . import o3de_utils
 from . import utils
 import addon_utils
+
+
+directory = Path.cwd()
+sys.path += [str(directory)]
 
 
 #Scene Props
@@ -28,8 +34,59 @@ def register_props():
     bpy.types.Scene.o3de_export_collection = bpy.props.EnumProperty(name="export_colection",
                                                                 description="collection to export",items=utils.getCollectionList)
 
+    bpy.types.Scene.selected_o3de_project_path = ''
+    bpy.types.Scene.pop_up_notes = ''
+    bpy.types.Scene.pop_up_confirm_label = ''
+    bpy.types.Scene.pop_up_question_label = ''
+    bpy.types.Scene.pop_up_question_bool = False
+    bpy.types.Scene.pop_up_type = ''
+    bpy.types.Scene.udp_type = ''
+    bpy.types.Scene.export_textures_folder = True
+    bpy.types.Scene.animation_export = constants.NO_ANIMATION
+    bpy.types.Scene.file_menu_animation_export = False
+    bpy.types.Scene.export_good_o3de = True
+    bpy.types.Scene.multi_file_export_o3de = False
+    bpy.types.Scene.stored_image_source_paths = {}
+    bpy.types.Scene.o3de_projects_list = EnumProperty(items=o3de_utils.build_projects_list(), name='')
+    bpy.types.Scene.texture_options_list = EnumProperty(items=constants.EXPORT_LIST_OPTIONS, name='', default='0')
+    bpy.types.Scene.animation_options_list = EnumProperty(items=constants.ANIMATION_LIST_OPTIONS, name='', default='0')
+    bpy.types.WindowManager.multi_file_export_toggle = bpy.props.BoolProperty()
+    bpy.types.WindowManager.mesh_triangle_export_toggle = bpy.props.BoolProperty()
+    bpy.types.Scene.export_option_gui = False
+    bpy.types.Scene.convert_mesh_to_triangles = True
+
+    bpy.types.Scene.plugin_directory = str(directory)
+    bpy.types.Scene.export_file_name_o3de = bpy.props.StringProperty(
+        name="",
+        description="Export File Name",
+        default="o3de_export"
+    )
 
 
+def delete_props():
+    del bpy.types.Scene.pop_up_notes
+    del bpy.types.Scene.pop_up_confirm_label
+    del bpy.types.Scene.pop_up_question_label
+    del bpy.types.Scene.pop_up_question_bool
+    del bpy.types.Scene.pop_up_type
+    del bpy.types.Scene.udp_type
+    del bpy.types.Scene.selected_o3de_project_path
+    del bpy.types.Scene.o3de_projects_list
+    del bpy.types.Scene.texture_options_list
+    del bpy.types.Scene.animation_options_list
+    del bpy.types.Scene.export_good_o3de
+    del bpy.types.Scene.multi_file_export_o3de
+    del bpy.types.Scene.export_textures_folder
+    del bpy.types.Scene.animation_export
+    del bpy.types.Scene.file_menu_animation_export
+    del bpy.types.Scene.stored_image_source_paths
+    del bpy.types.WindowManager.multi_file_export_toggle
+    del bpy.types.Scene.export_option_gui
+    del bpy.types.WindowManager.mesh_triangle_export_toggle
+    del bpy.types.Scene.convert_mesh_to_triangles
+    
+    del bpy.types.Scene.plugin_directory
+    del bpy.types.Scene.export_file_name_o3de
 
 
 def message_box(message = "", title = "Message Box", icon = 'LIGHT'):
@@ -109,12 +166,12 @@ class MessageBoxConfirm(bpy.types.Operator):
         self.report({'INFO'}, "OKAY")
         return {'FINISHED'}
 
-class O3DE_OP_Export(bpy.types.Operator):
+class O3DE_OP_Export_Selected(bpy.types.Operator):
     """!
-    This Class is for the UI Report Card Pop-Up.
+    This Class is responsible for exporting the selected objects under the given entity.
     """
-    bl_idname = "o3de.export"
-    bl_label = "O3DE Scene Exporter"
+    bl_idname = "o3de.export_selected"
+    bl_label = "O3DE Selection Exporter"
     bl_options = {'REGISTER', 'INTERNAL'}
     
     @classmethod
@@ -677,7 +734,7 @@ class O3deTools(Panel):
             else:
                 export_files_row.enabled = True
             # Final Export Files Button
-            export_files_row.operator('o3de.export', text='EXPORT TO O3DE', icon="BLENDER")
+            export_files_row.operator('o3de.export_selected', text='EXPORT TO O3DE', icon="BLENDER")
         
             export_collection_row=layout.row()
             export_collection_row.enabled=True
@@ -686,7 +743,7 @@ class O3deTools(Panel):
             export_collection_row.prop(context.scene, "o3de_export_collection", text='EXPORT COLLECTION', icon="COLLECTION_COLOR_04")
             export_collection_row=layout.row()
             export_collection_row.enabled=True
-            export_collection_row.operator('o3de.export', text='EXPORT COLLECTION', icon="BLENDER")
+            export_collection_row.operator('o3de.export_selected', text='EXPORT COLLECTION', icon="BLENDER")
             
             
         else:
