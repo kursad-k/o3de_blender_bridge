@@ -3,23 +3,23 @@
 This repository is for continuing the work on the O3DE->Blender bridge. This add-on currently is WIP. The plan for the next version version is outlined below.
 
 
--[ ] Version bumps and Blender 4.x compatibility enhancement
+- [ ] Version bumps and Blender 4.x compatibility enhancement
 
--[ ] Change the license to Blender complaint GPL license
+- [ ] Change the license to Blender complaint GPL license
 
--[ ] Collection based workflow
+- [ ] Collection based workflow
 
--[ ] GLTF support
+- [ ] GLTF support
 
--[ ] Drop FBX support
+- [ ] Drop FBX support
 
--[ ] Flatten multiple actions into a single animation channel
+- [ ] Flatten multiple actions into a single animation channel
 
--[ ] Export animations as multiple FBX files 
+- [ ] Export animations as multiple FBX files 
 
--[ ] Sample O3DE asset pack
+- [ ] Sample O3DE asset pack
 
--[ ] Provide Mannequin Man
+- [ ] Provide Mannequin Man
 
 
 
