@@ -49,7 +49,7 @@ bl_info = {
 import sys
 import importlib
 
-from re import A
+# from re import A
 from typing import Any
 import bpy
 from bpy.props import EnumProperty, PointerProperty
