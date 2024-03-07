@@ -109,11 +109,11 @@ class MessageBoxConfirm(bpy.types.Operator):
         self.report({'INFO'}, "OKAY")
         return {'FINISHED'}
 
-class ReportCard(bpy.types.Operator):
+class O3DE_OP_Export(bpy.types.Operator):
     """!
     This Class is for the UI Report Card Pop-Up.
     """
-    bl_idname = "report_card.popup"
+    bl_idname = "o3de.export"
     bl_label = "O3DE Scene Exporter"
     bl_options = {'REGISTER', 'INTERNAL'}
     
@@ -677,7 +677,7 @@ class O3deTools(Panel):
             else:
                 export_files_row.enabled = True
             # Final Export Files Button
-            export_files_row.operator('vin.report_card_button', text='EXPORT TO O3DE', icon="BLENDER")
+            export_files_row.operator('o3de.export', text='EXPORT TO O3DE', icon="BLENDER")
         
             export_collection_row=layout.row()
             export_collection_row.enabled=True
@@ -686,7 +686,7 @@ class O3deTools(Panel):
             export_collection_row.prop(context.scene, "o3de_export_collection", text='EXPORT COLLECTION', icon="COLLECTION_COLOR_04")
             export_collection_row=layout.row()
             export_collection_row.enabled=True
-            export_collection_row.operator('vin.report_card_button', text='EXPORT COLLECTION', icon="BLENDER")
+            export_collection_row.operator('o3de.export', text='EXPORT COLLECTION', icon="BLENDER")
             
             
         else:

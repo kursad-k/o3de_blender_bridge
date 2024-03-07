@@ -78,24 +78,47 @@ if locals().get('loaded'):
 
 
 
+classes = (
+    ui.O3deTools,
+    ui.MessageBox,
+    ui.MessageBoxConfirm,
+    ui.ReportCardButton,
+    ui.WikiButton,
+    ui.CustomProjectPath,
+    ui.AddColliderMesh,
+    ui.AddLODMesh,
+    ui.ProjectsListDropDown,
+    ui.SceneExporterFileMenu,
+    ui.ExportOptionsListDropDown,
+    ui.AnimationOptionsListDropDown,
+    ui.O3DE_OP_Export,
+)
+
+
+
 def register():
     """! 
     This is the function that will register Classes and Global Vars for this plugin
     """
+    # bpy.utils.register_class(ui.O3deTools)
+    # bpy.utils.register_class(ui.MessageBox)
+    # bpy.utils.register_class(ui.MessageBoxConfirm)
+    # bpy.utils.register_class(ui.ReportCard)
+    # # bpy.utils.register_class(ui.ReportCardButton)
+    # bpy.utils.register_class(ui.WikiButton)
+    # bpy.utils.register_class(ui.CustomProjectPath)
+    # bpy.utils.register_class(ui.AddColliderMesh)
+    # bpy.utils.register_class(ui.AddLODMesh)
+    # bpy.utils.register_class(ui.ProjectsListDropDown)
+    # bpy.utils.register_class(ui.SceneExporterFileMenu)
+    # bpy.utils.register_class(ui.ExportOptionsListDropDown)
+    # bpy.utils.register_class(ui.AnimationOptionsListDropDown)
+    
+    from bpy.utils import register_class
+    for cls in classes:
+        register_class(cls)
+    
     bpy.types.Scene.plugin_directory = str(directory)
-    bpy.utils.register_class(ui.O3deTools)
-    bpy.utils.register_class(ui.MessageBox)
-    bpy.utils.register_class(ui.MessageBoxConfirm)
-    bpy.utils.register_class(ui.ReportCard)
-    bpy.utils.register_class(ui.ReportCardButton)
-    bpy.utils.register_class(ui.WikiButton)
-    bpy.utils.register_class(ui.CustomProjectPath)
-    bpy.utils.register_class(ui.AddColliderMesh)
-    bpy.utils.register_class(ui.AddLODMesh)
-    bpy.utils.register_class(ui.ProjectsListDropDown)
-    bpy.utils.register_class(ui.SceneExporterFileMenu)
-    bpy.utils.register_class(ui.ExportOptionsListDropDown)
-    bpy.utils.register_class(ui.AnimationOptionsListDropDown)
     bpy.types.Scene.export_file_name_o3de = bpy.props.StringProperty(
         name="",
         description="Export File Name",
