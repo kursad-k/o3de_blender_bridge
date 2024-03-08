@@ -18,12 +18,67 @@ from . import constants
 from . import ui
 from . import o3de_utils
 
+def deselect_scene_objects(context):
+    """!
+    Deselect objects of the scene one by one. This is safer for headless or non-viewport calls.
+    """
+    C=context
+    objs=C.scene.objects
+    
+    for o in objs:
+        o.select_set(False)
+
+
+
+def get_active_collection():
+    """!
+    This will get the currently active collection in the scene's outliner
+    """
+    active_collection = bpy.context.collection
+    print(active_collection.name)
+    return active_collection
+
+
+
+def getCollectionList(scene, context):
+    """
+    !This is a callback function to build the list of collections in the Blender file
+    """
+    items = []
+    cols=[c for c in bpy.data.collections]
+    
+    if cols:
+        for c in cols:
+            items.append((f"{c.name}", f"{c.name}", f"{c}"))
+            # print(c)
+        
+    return items
+
+def getCollectionObjects(col):
+    return list(col.all_objects)
+
+def set_active_object(obj):
+    """!
+    This function will make the obj active current active object in the scene.
+    """
+    # bpy.ops.object.select_all(action='DESELECT')
+    
+    #Use object traversiong and manually setting selection flags is safer 
+    C=bpy.context
+    C.view_layer.objects.active = obj
+    obj.select_set(True)
+
+
 def select_object(obj):
     """!
     This function will select just one object
     """
-    bpy.ops.object.select_all(action='DESELECT')
-    bpy.context.view_layer.objects.active = obj
+    # bpy.ops.object.select_all(action='DESELECT')
+    
+    #Using object traversing and manually setting selection flags is safer 
+    C=bpy.context
+    deselect_scene_objects(C)
+    C.view_layer.objects.active = obj
     obj.select_set(True)
 
 def check_selected():
@@ -560,28 +615,3 @@ def check_selected_transforms():
         
         
 
-def get_active_collection():
-    """This will get the currently active collection in the scene's outliner
-    """
-    active_collection = bpy.context.collection
-    print(active_collection.name)
-    return active_collection
-
-
-
-def getCollectionList(scene, context):
-    """This is a callback function to build the list of collections in the Blender file
-    """
-    items = []
-    cols=[c for c in bpy.data.collections]
-    
-    if cols:
-        for c in cols:
-            items.append((f"{c.name}", f"{c.name}", f"{c}"))
-            # print(c)
-        
-    return items
-
-
-def getCollectionObjects(col):
-    return list(col.all_objects)
