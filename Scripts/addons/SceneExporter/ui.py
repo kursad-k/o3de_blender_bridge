@@ -168,7 +168,8 @@ class MessageBoxConfirm(bpy.types.Operator):
 
 class O3DE_OP_Export_Selected(bpy.types.Operator):
     """!
-    This Class is responsible for exporting the selected objects under the given entity.
+    This Class is responsible for exporting the selected objects under the given entity. 
+    It presents a preflight card with information about the exportables.
     """
     bl_idname = "o3de.export_selected"
     bl_label = "O3DE Selection Exporter"
