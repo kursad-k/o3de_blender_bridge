@@ -314,6 +314,85 @@ class O3DE_OP_Export_Selected(bpy.types.Operator):
             self.export_files(file_name)
         return{'FINISHED'}
 
+
+class O3DE_OP_Export_Collection(bpy.types.Operator):
+    """!
+    This Class is responsible for exporting the objects under the selected collection.
+    It presents a preflight card with information about the exportables.
+    """
+    bl_idname = "o3de.export_collection"
+    bl_label = "O3DE Collection Exporter"
+    bl_options = {'REGISTER', 'INTERNAL'}
+    
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    def invoke(self, context, event):
+        return context.window_manager.invoke_props_dialog(self)
+
+    
+    def export_files(self, file_name):
+        """!
+        This function will export the selected as an .fbx to the current project path.
+        @param file_name is the file name selected or string in export_file_name_o3de
+        """
+        # Add file ext
+        file_name = f'{file_name}.fbx'
+        fbx_exporter.fbx_file_exporter('', file_name)
+    
+    def execute(self,context):
+        scn=context.scene
+        cur_col=bpy.data.collections[scn.o3de_export_collection]
+        objs=utils.getCollectionObjects(cur_col)
+        print(objs)
+        
+        return{'FINISHED'}
+    
+    def execute_(self, context):
+        """!
+        This function will check the current selected count and multi_file_export_o3de bool is True or False.
+        If multi_file_export_o3de is True it will export each selected object as an .fbx file, if False it will
+        export all objects selected as one .fbx.
+        @param context defualt for this blender class
+        """
+        # Validate a selection
+        valid_selection, selected_name = utils.check_selected()
+        # Check if there are multi selections
+        if len(selected_name) > 1:
+            if bpy.types.Scene.multi_file_export_o3de:
+                for obj_name in selected_name:
+                    # Deselect all or will just keep adding to selection
+                    bpy.ops.object.select_all(action='DESELECT')
+                    # Select a mesh in the loop
+                    bpy.data.objects[obj_name].select_set(True)
+                    # Remove some nasty invalid char
+                    file_name = re.sub(r'\W+', '', obj_name)
+                    # Export file
+                    self.export_files(file_name)
+            else:
+                # Remove some nasty invalid char
+                file_name = re.sub(r'\W+', '', bpy.context.scene.export_file_name_o3de)
+                # Export file
+                self.export_files(file_name)
+        else:
+            # Remove some nasty invalid char
+            file_name = re.sub(r'\W+', '', bpy.context.scene.export_file_name_o3de)
+            # Export file
+            self.export_files(file_name)
+        return{'FINISHED'}
+
+
+
+
+
+
+
+
+
+
+
+
 class ReportCardButton(bpy.types.Operator):
     """!
     This Class is for the UI Report Card Button
@@ -743,8 +822,8 @@ class O3deTools(Panel):
             # export_collection_row.operator('vin.report_card_button', text='EXPORT COLLECTION', icon="BLENDER")
             export_collection_row.prop(context.scene, "o3de_export_collection", text='EXPORT COLLECTION', icon="COLLECTION_COLOR_04")
             export_collection_row=layout.row()
-            export_collection_row.enabled=True
-            export_collection_row.operator('o3de.export_selected', text='EXPORT COLLECTION', icon="BLENDER")
+            # export_collection_row.enabled=True
+            export_collection_row.operator('o3de.export_collection', text='EXPORT COLLECTION', icon="BLENDER")
             
             
         else:

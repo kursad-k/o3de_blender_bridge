@@ -90,6 +90,7 @@ classes = (
     ui.ExportOptionsListDropDown,
     ui.AnimationOptionsListDropDown,
     ui.O3DE_OP_Export_Selected,
+    ui.O3DE_OP_Export_Collection,
 )
 
 

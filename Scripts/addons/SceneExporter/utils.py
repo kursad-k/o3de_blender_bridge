@@ -577,7 +577,11 @@ def getCollectionList(scene, context):
     
     if cols:
         for c in cols:
-            items.append((f"{c}", f"{c.name}", f"{c}"))
-            print(c)
+            items.append((f"{c.name}", f"{c.name}", f"{c}"))
+            # print(c)
         
     return items
+
+
+def getCollectionObjects(col):
+    return list(col.all_objects)
