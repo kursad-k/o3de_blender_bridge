@@ -40,7 +40,7 @@ def get_active_collection():
 
 
 
-def getCollectionList(scene, context):
+def get_collection_list(scene, context):
     """
     !This is a callback function to build the list of collections in the Blender file
     """
@@ -54,7 +54,7 @@ def getCollectionList(scene, context):
         
     return items
 
-def getCollectionObjects(col):
+def get_collection_objects(col):
     return list(col.all_objects)
 
 def set_active_object(context,obj):

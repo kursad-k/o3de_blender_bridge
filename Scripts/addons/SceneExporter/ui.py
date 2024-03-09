@@ -330,7 +330,7 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
         return context.window_manager.invoke_props_dialog(self)
 
     
-    def export_files(self,context, file_name):
+    def export_files(self,context):
         """!
         This function will export the selected as an .fbx to the current project path.
         @param file_name is the file name selected or string in export_file_name_o3de
@@ -338,11 +338,13 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
        
        
         export_folder=Path(context.scene.selected_o3de_project_path)
+        export_file=Path(context.scene.export_file_name_o3de).with_suffix(".fbx")
         # Add file ext
-        file_name = Path(f'{file_name}.fbx')
+        # file_name = Path(f'{file_name}.fbx')
         # fbx_exporter.fbx_file_exporter('', file_name)
-        export_path=export_folder.joinpath(file_name).as_posix()
-        fbx_export.fbx_export(file=export_path)
+        export_path=export_folder.joinpath(export_file).as_posix()
+        # fbx_exporter.fbx_export(file=export_path)
+        print("Exporting -> ", export_path, export_folder, export_file)
     
     def execute(self,context):
         """!
@@ -350,8 +352,9 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
         """
         C=context
         scn=context.scene
-        cur_col=bpy.data.collections[scn.o3de_export_collection]
-        objs=utils.get_collection_objects(cur_col)
+        col=bpy.data.collections[scn.o3de_export_collection]
+        objs=utils.get_collection_objects(col)
+        # file_name=context.scene.export_file_name_o3de
         # print(objs)
         
         if objs:
@@ -360,7 +363,7 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
             #Make sure there is at least one active object from the collection
             utils.set_active_object(C,objs[-1])
         
-        self.export_files(context,file_path)
+            self.export_files(context)
             
         
             

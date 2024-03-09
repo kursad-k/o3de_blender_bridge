@@ -189,18 +189,13 @@ def fbx_export(self, file=None,gscale=1.0,custom=None):
             use_default_take=True, use_anim_optimize=True, anim_optimize_precision=6.0, path_mode='AUTO',
             embed_textures=False, batch_mode='OFF', use_batch_own_dir=True, use_metadata=True
         """
-
         if file and custom:
-
             self.customExport(exporter="bpy.ops.export_scene.fbx",
                             file=file,global_scale=gscale, custom=custom,
                             exporterdefaults="use_selection=True")
-
         elif file:
 
-
             f_start=bpy.context.scene.frame_start
-
             f_end=bpy.context.scene.frame_end
             c_frame=bpy.context.scene.frame_current
 
