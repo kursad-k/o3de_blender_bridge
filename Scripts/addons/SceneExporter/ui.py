@@ -24,10 +24,8 @@ from . import o3de_utils
 from . import utils
 import addon_utils
 
-
 directory = Path.cwd()
 sys.path += [str(directory)]
-
 
 #Scene Props
 def register_props():
@@ -332,14 +330,19 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
         return context.window_manager.invoke_props_dialog(self)
 
     
-    def export_files(self, file_name):
+    def export_files(self,context, file_name):
         """!
         This function will export the selected as an .fbx to the current project path.
         @param file_name is the file name selected or string in export_file_name_o3de
         """
+       
+       
+        export_folder=Path(context.scene.selected_o3de_project_path)
         # Add file ext
-        file_name = f'{file_name}.fbx'
-        fbx_exporter.fbx_file_exporter('', file_name)
+        file_name = Path(f'{file_name}.fbx')
+        # fbx_exporter.fbx_file_exporter('', file_name)
+        export_path=export_folder.joinpath(file_name).as_posix()
+        fbx_export.fbx_export(file=export_path)
     
     def execute(self,context):
         """!
@@ -348,7 +351,7 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
         C=context
         scn=context.scene
         cur_col=bpy.data.collections[scn.o3de_export_collection]
-        objs=utils.getCollectionObjects(cur_col)
+        objs=utils.get_collection_objects(cur_col)
         # print(objs)
         
         if objs:
@@ -356,7 +359,10 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
             utils.select_objects(objs)
             #Make sure there is at least one active object from the collection
             utils.set_active_object(C,objs[-1])
+        
+        self.export_files(context,file_path)
             
+        
             
         return{'FINISHED'}
     
@@ -392,16 +398,6 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
             # Export file
             self.export_files(file_name)
         return{'FINISHED'}
-
-
-
-
-
-
-
-
-
-
 
 
 class ReportCardButton(bpy.types.Operator):

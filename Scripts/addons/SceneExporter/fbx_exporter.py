@@ -172,3 +172,54 @@ def fbx_file_exporter(fbx_file_path, file_name):
         bpy.ops.message.popup('INVOKE_DEFAULT')
         if not bpy.types.Scene.export_textures_folder is None:
             utils.replace_stored_paths()
+
+
+def fbx_export(self, file=None,gscale=1.0,custom=None):
+
+        """filepath="", check_existing=True, axis_forward='-Z', axis_up='Y',
+            filter_glob="*.fbx", version='BIN7400', ui_tab='MAIN', use_selection=False,
+            global_scale=1.0, apply_unit_scale=True, apply_scale_options='FBX_SCALE_NONE',
+            bake_space_transform=False, object_types={'ARMATURE', 'CAMERA', 'EMPTY', 'LAMP', 'MESH', 'OTHER'},
+            use_mesh_modifiers=True, use_mesh_modifiers_render=True, mesh_smooth_type='OFF',
+            use_mesh_edges=False, use_tspace=False, use_custom_props=False, add_leaf_bones=True,
+            primary_bone_axis='Y', secondary_bone_axis='X', use_armature_deform_only=False,
+            armature_nodetype='NULL', bake_anim=True, bake_anim_use_all_bones=True,
+            bake_anim_use_nla_strips=True, bake_anim_use_all_actions=True, bake_anim_force_startend_keying=True,
+            bake_anim_step=1.0, bake_anim_simplify_factor=1.0, use_anim=True, use_anim_action_all=True,
+            use_default_take=True, use_anim_optimize=True, anim_optimize_precision=6.0, path_mode='AUTO',
+            embed_textures=False, batch_mode='OFF', use_batch_own_dir=True, use_metadata=True
+        """
+
+        if file and custom:
+
+            self.customExport(exporter="bpy.ops.export_scene.fbx",
+                            file=file,global_scale=gscale, custom=custom,
+                            exporterdefaults="use_selection=True")
+
+        elif file:
+
+
+            f_start=bpy.context.scene.frame_start
+
+            f_end=bpy.context.scene.frame_end
+            c_frame=bpy.context.scene.frame_current
+
+            #TODO: Renable frame range export later
+
+            # We set the frame range to current frame so only current frame is exported
+            bpy.context.scene.frame_start=c_frame
+            bpy.context.scene.frame_end=c_frame
+
+#             bpy.ops.export_scene.fbx(filepath=file, ui_tab='MAIN',
+            bpy.ops.export_scene.fbx(filepath=file, use_selection=True, check_existing=True,
+                                    global_scale=1)
+
+
+            #Restore frames
+            bpy.context.scene.frame_start=f_start
+            bpy.context.scene.frame_end=f_end
+
+            return True
+        else:
+            print("No file path exists for the FBX export")
+            return False
