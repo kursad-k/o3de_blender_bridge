@@ -342,11 +342,22 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
         fbx_exporter.fbx_file_exporter('', file_name)
     
     def execute(self,context):
+        """!
+        This function will exports all the objects that are under the selected collection.
+        """
+        C=context
         scn=context.scene
         cur_col=bpy.data.collections[scn.o3de_export_collection]
         objs=utils.getCollectionObjects(cur_col)
-        print(objs)
+        # print(objs)
         
+        if objs:
+            utils.deselect_scene_objects(C)
+            utils.select_objects(objs)
+            #Make sure there is at least one active object from the collection
+            utils.set_active_object(C,objs[-1])
+            
+            
         return{'FINISHED'}
     
     def execute_(self, context):

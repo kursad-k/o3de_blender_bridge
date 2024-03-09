@@ -57,14 +57,14 @@ def getCollectionList(scene, context):
 def getCollectionObjects(col):
     return list(col.all_objects)
 
-def set_active_object(obj):
+def set_active_object(context,obj):
     """!
     This function will make the obj active current active object in the scene.
     """
     # bpy.ops.object.select_all(action='DESELECT')
     
     #Use object traversiong and manually setting selection flags is safer 
-    C=bpy.context
+    C=context
     C.view_layer.objects.active = obj
     obj.select_set(True)
 
@@ -76,10 +76,15 @@ def select_object(obj):
     # bpy.ops.object.select_all(action='DESELECT')
     
     #Using object traversing and manually setting selection flags is safer 
-    C=bpy.context
-    deselect_scene_objects(C)
-    C.view_layer.objects.active = obj
+    # C=bpy.context
+    # deselect_scene_objects(C)
+    # C.view_layer.objects.active = obj
     obj.select_set(True)
+
+
+def select_objects(objs):
+    for ob in objs:
+        select_object(ob)
 
 def check_selected():
     """!
