@@ -30,7 +30,7 @@ sys.path += [str(directory)]
 #Scene Props
 def register_props():
     bpy.types.Scene.o3de_export_collection = bpy.props.EnumProperty(name="export_colection",
-                                                                description="collection to export",items=utils.getCollectionList)
+                                                                description="collection to export",items=utils.get_collection_list)
 
     bpy.types.Scene.selected_o3de_project_path = ''
     bpy.types.Scene.pop_up_notes = ''
