@@ -337,13 +337,13 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
         """
        
        
-        export_folder=Path(context.scene.selected_o3de_project_path)
+        export_folder=Path(context.scene.selected_o3de_project_path).joinpath("Assets")
         export_file=Path(context.scene.export_file_name_o3de).with_suffix(".fbx")
         # Add file ext
         # file_name = Path(f'{file_name}.fbx')
         # fbx_exporter.fbx_file_exporter('', file_name)
         export_path=export_folder.joinpath(export_file).as_posix()
-        # fbx_exporter.fbx_export(file=export_path)
+        fbx_exporter.fbx_export(file=export_path)
         print("Exporting -> ", export_path, export_folder, export_file)
     
     def execute(self,context):

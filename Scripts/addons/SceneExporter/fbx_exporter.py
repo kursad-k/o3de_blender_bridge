@@ -174,7 +174,7 @@ def fbx_file_exporter(fbx_file_path, file_name):
             utils.replace_stored_paths()
 
 
-def fbx_export(self, file=None,gscale=1.0,custom=None):
+def fbx_export(file=None,gscale=1.0,custom=None):
 
         """filepath="", check_existing=True, axis_forward='-Z', axis_up='Y',
             filter_glob="*.fbx", version='BIN7400', ui_tab='MAIN', use_selection=False,
