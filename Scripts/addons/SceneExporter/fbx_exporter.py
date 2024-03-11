@@ -189,7 +189,7 @@ def fbx_export(file=None,gscale=1.0,custom=None, context=bpy.context):
         """
         C=context
         if file and custom:
-            self.customExport(exporter="Cort_scene.fbx",
+            self.customExport(exporter="bpy.ops.export_scene.fbx",
                             file=file,global_scale=gscale, custom=custom,
                             exporterdefaults="use_selection=True")
         elif file:

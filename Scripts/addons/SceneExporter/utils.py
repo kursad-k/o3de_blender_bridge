@@ -24,11 +24,8 @@ def deselect_scene_objects(context):
     """
     C=context
     objs=C.scene.objects
-    
     for o in objs:
         o.select_set(False)
-
-
 
 def get_active_collection():
     """!
@@ -37,8 +34,6 @@ def get_active_collection():
     active_collection = bpy.context.collection
     print(active_collection.name)
     return active_collection
-
-
 
 def get_collection_list(scene, context):
     """
@@ -67,7 +62,6 @@ def set_active_object(context,obj):
     C=context
     C.view_layer.objects.active = obj
     obj.select_set(True)
-
 
 def select_object(obj):
     """!
