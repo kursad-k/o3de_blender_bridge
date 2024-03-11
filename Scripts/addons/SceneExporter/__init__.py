@@ -27,8 +27,8 @@
 #
 # Hardware and Software Requirements:
 #
-# Support for Blender 3.+ Windows 10/11 64-bit version
-# O3DE Stable 21.11 Release Windows 10/11 64-bit version
+# Support for Blender 4.+ Windows 10/11 64-bit version
+# O3DE Stable 23.10 Release Windows 10/11 64-bit version
 #
 # @section Launcher Notes
 # - Comments are Doxygen compatible
