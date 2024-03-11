@@ -20,6 +20,7 @@ from bpy.types import Panel, Operator, PropertyGroup, AddonPreferences
 from bpy.props import EnumProperty, StringProperty, BoolProperty, PointerProperty
 from . import A, constants
 from . import fbx_exporter
+from . import gltf_exporter
 from . import o3de_utils
 from . import utils
 import addon_utils
