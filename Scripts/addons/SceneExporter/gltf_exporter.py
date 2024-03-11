@@ -8,14 +8,14 @@
 #
 #
 # -------------------------------------------------------------------------
-import bpy
 from pathlib import Path
 from . import utils
 from . import o3de_utils
 from . import constants
+import bpy
 
 
-def gltf_export(self, file=None,gscale=1.0,custom=None):
+def gltf_export(file=None,gscale=1.0,custom=None, context=bpy.context):
     """!
         filepath='', check_existing=True, export_import_convert_lighting_mode='SPEC', 
         gltf_export_id='', export_format='GLB', ui_tab='GENERAL', export_copyright='', 
@@ -42,28 +42,30 @@ def gltf_export(self, file=None,gscale=1.0,custom=None):
         export_try_omit_sparse_sk=False, export_gpu_instances=False, export_nla_strips=True, export_original_specular=False, 
         will_save_settings=False, filter_glob='*.glb'
     """
+    C=context
+    
     if file and custom:
         self.customExport(exporter="bpy.ops.export_scene.gltf",
                         file=file,global_scale=gscale, custom=custom,
                         exporterdefaults="use_selection=True")
         
     elif file:
-        f_start=bpy.context.scene.frame_start
-        f_end=bpy.context.scene.frame_end
-        c_frame=bpy.context.scene.frame_current
+        f_start=C.scene.frame_start
+        f_end=C.scene.frame_end
+        c_frame=C.scene.frame_current
 
         #TODO: Renable frame range export later
         # We set the frame range to current frame so only current frame is exported
-        bpy.context.scene.frame_start=c_frame
-        bpy.context.scene.frame_end=c_frame
+        C.scene.frame_start=c_frame
+        C.scene.frame_end=c_frame
 
-        bpy.ops.export_scene.gltf(filepath=file, export_format=GLTF, use_renderable=True, use_active_scene=True, use_selection=True, 
+        bpy.ops.export_scene.gltf(filepath=file, export_format='GLTF_SEPARATE', use_renderable=True, use_active_scene=True, use_selection=True, 
                                     use_visible=True, export_apply=True )
         #export_selected=True (I got a warning here)
 
         #Restore frames
-        bpy.context.scene.frame_start=f_start
-        bpy.context.scene.frame_end=f_end
+        C.scene.frame_start=f_start
+        C.scene.frame_end=f_end
 
         return True
     else:

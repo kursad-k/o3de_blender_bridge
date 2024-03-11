@@ -344,7 +344,14 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
         # file_name = Path(f'{file_name}.fbx')
         # fbx_exporter.fbx_file_exporter('', file_name)
         export_path=export_folder.joinpath(export_file).as_posix()
-        fbx_exporter.fbx_export(file=export_path)
+        fbx_exporter.fbx_export(file=export_path, context=context)
+    
+        export_file=Path(context.scene.export_file_name_o3de).with_suffix(".gltf")
+        export_path=export_folder.joinpath(export_file).as_posix()
+        gltf_exporter.gltf_export(file=export_path, context=context)
+        
+            
+        
         print("Exporting -> ", export_path, export_folder, export_file)
     
     def execute(self,context):

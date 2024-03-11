@@ -7,9 +7,8 @@
 # SPDX-License-Identifier: Apache-2.0 OR MIT
 #
 #
-# -------------------------------------------------------------------------
+# -------------------------------------------------------------------------Cthlib import Path
 import bpy
-from pathlib import Path
 from . import utils
 from . import o3de_utils
 from . import constants
@@ -173,8 +172,7 @@ def fbx_file_exporter(fbx_file_path, file_name):
         if not bpy.types.Scene.export_textures_folder is None:
             utils.replace_stored_paths()
 
-
-def fbx_export(file=None,gscale=1.0,custom=None):
+def fbx_export(file=None,gscale=1.0,custom=None, context=bpy.context):
         """!
             filepath="", check_existing=True, axis_forward='-Z', axis_up='Y',
             filter_glob="*.fbx", version='BIN7400', ui_tab='MAIN', use_selection=False,
@@ -189,25 +187,27 @@ def fbx_export(file=None,gscale=1.0,custom=None):
             use_default_take=True, use_anim_optimize=True, anim_optimize_precision=6.0, path_mode='AUTO',
             embed_textures=False, batch_mode='OFF', use_batch_own_dir=True, use_metadata=True
         """
+        C=context
         if file and custom:
-            self.customExport(exporter="bpy.ops.export_scene.fbx",
+            self.customExport(exporter="Cort_scene.fbx",
                             file=file,global_scale=gscale, custom=custom,
                             exporterdefaults="use_selection=True")
         elif file:
-            f_start=bpy.context.scene.frame_start
-            f_end=bpy.context.scene.frame_end
-            c_frame=bpy.context.scene.frame_current
+            f_start=C.scene.frame_start
+            f_end=C.scene.frame_end
+            c_frame=C.scene.frame_current
 
             #TODO: Renable frame range export later
             # We set the frame range to current frame so only current frame is exported
-            bpy.context.scene.frame_start=c_frame
-            bpy.context.scene.frame_end=c_frame
+            C.scene.frame_start=c_frame
+            C.scene.frame_end=c_frame
 
             bpy.ops.export_scene.fbx(filepath=file, use_selection=True, check_existing=True,
                                     global_scale=1)
+            
             #Restore frames
-            bpy.context.scene.frame_start=f_start
-            bpy.context.scene.frame_end=f_end
+            C.scene.frame_start=f_start
+            C.scene.frame_end=f_end
 
             return True
         else:
