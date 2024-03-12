@@ -1,4 +1,4 @@
-# coding:utf-8
+#`a` coding:utf-8
 #!/usr/bin/python
 #
 # Copyright (c) Contributors to the Open 3D Engine Project.
@@ -323,13 +323,14 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
     bl_label = "O3DE Collection Exporter"
     bl_options = {'REGISTER', 'INTERNAL'}
     
+    exportable : BoolProperty(default=False)
+    
     @classmethod
     def poll(cls, context):
         return True
 
     def invoke(self, context, event):
-        return context.window_manager.invoke_props_dialog(self)
-
+            return context.window_manager.invoke_props_dialog(self)
     
     def export_files(self,context):
         """!
@@ -360,21 +361,31 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
         col=bpy.data.collections[scn.o3de_export_collection]
         col_objs=utils.get_collection_objects(col)
         
-        if objs:
+        if col_objs:
             utils.deselect_scene_objects(C)
             utils.select_objects(col_objs)
             #Make sure there is at least one active object from the collection
-            utils.set_active_object(C,objs[-1])
+            utils.set_active_object(C,col_objs[-1])
             self.export_files(context)
         return{'FINISHED'}
     
     def draw(self, context):
-        layout = self.layout
-        column = layout.column()  # Setting this stuff up so we can size it to be square like the others.
-        row = column.row()
-        row.scale_y = 2  # So it is at least the right size, if nothing else.
-        row.scale_x = 2  # So it is at least the right size, if nothing else.
-        row.operator("my.change_to_edit_mode", icon='EDITMODE_HLT', text="")
+        if context.scene.selected_o3de_project_path:
+            self.exportable=True
+            layout = self.layout
+            column = layout.column()
+            row = column.row()
+            row.label(text="test", icon='WORLD_DATA')
+            # row.operator("o3de.export_collection", text="test")
+            # row.scale_y = 2
+            # row.scale_x = 2
+        else:
+            self.exportable=False
+            layout = self.layout
+            column = layout.column()
+            row = column.row()
+            row.label(text="Please select the O3DE project.", icon='WORLD_DATA')
+            
 
     def execute_(self, context):
         """!
