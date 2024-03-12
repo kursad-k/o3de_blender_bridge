@@ -336,22 +336,19 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
         This function will export the selected as an .fbx to the current project path.
         @param file_name is the file name selected or string in export_file_name_o3de
         """
-       
-       
-        export_folder=Path(context.scene.selected_o3de_project_path).joinpath("Assets")
-        export_file=Path(context.scene.export_file_name_o3de).with_suffix(".fbx")
+        #FBX
         # Add file ext
         # file_name = Path(f'{file_name}.fbx')
         # fbx_exporter.fbx_file_exporter('', file_name)
+        export_folder=Path(context.scene.selected_o3de_project_path).joinpath("Assets")
+        export_file=Path(context.scene.export_file_name_o3de).with_suffix(".fbx")
         export_path=export_folder.joinpath(export_file).as_posix()
         fbx_exporter.fbx_export(file=export_path, context=context)
     
+        #GLTF
         export_file=Path(context.scene.export_file_name_o3de).with_suffix(".gltf")
         export_path=export_folder.joinpath(export_file).as_posix()
         gltf_exporter.gltf_export(file=export_path, context=context)
-        
-            
-        
         print("Exporting -> ", export_path, export_folder, export_file)
     
     def execute(self,context):
@@ -361,22 +358,24 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
         C=context
         scn=context.scene
         col=bpy.data.collections[scn.o3de_export_collection]
-        objs=utils.get_collection_objects(col)
-        # file_name=context.scene.export_file_name_o3de
-        # print(objs)
+        col_objs=utils.get_collection_objects(col)
         
         if objs:
             utils.deselect_scene_objects(C)
-            utils.select_objects(objs)
+            utils.select_objects(col_objs)
             #Make sure there is at least one active object from the collection
             utils.set_active_object(C,objs[-1])
-        
             self.export_files(context)
-            
-        
-            
         return{'FINISHED'}
     
+    def draw(self, context):
+        layout = self.layout
+        column = layout.column()  # Setting this stuff up so we can size it to be square like the others.
+        row = column.row()
+        row.scale_y = 2  # So it is at least the right size, if nothing else.
+        row.scale_x = 2  # So it is at least the right size, if nothing else.
+        row.operator("my.change_to_edit_mode", icon='EDITMODE_HLT', text="")
+
     def execute_(self, context):
         """!
         This function will check the current selected count and multi_file_export_o3de bool is True or False.
