@@ -18,6 +18,19 @@ from . import constants
 from . import ui
 from . import o3de_utils
 
+
+
+def store_states(context):
+    """!
+    Store the currently selected objects
+    """
+    D=bpy.data
+    C=context
+    objs_selected=[o for o in D.objects if o.select_get()]
+    obj=C.object
+    objs_selected.append(obj)
+    return objs_selected
+    
 def deselect_scene_objects(context):
     """!
     Deselect objects of the scene one by one. This is safer for headless or non-viewport calls.

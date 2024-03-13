@@ -12,6 +12,7 @@ import bpy
 from . import utils
 from . import o3de_utils
 from . import constants
+from pathlib import Path
 
 def amimation_export_options():
     """!

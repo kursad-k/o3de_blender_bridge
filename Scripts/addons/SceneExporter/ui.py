@@ -8,12 +8,10 @@
 #
 #
 # -------------------------------------------------------------------------
-from multiprocessing import context
-import sys
-from pathlib import Path
 import bpy
-from pathlib import Path
+import sys
 import webbrowser
+from pathlib import Path
 import re
 from bpy_extras.io_utils import ExportHelper, ImportHelper
 from bpy.types import Panel, Operator, PropertyGroup, AddonPreferences
@@ -83,7 +81,7 @@ def delete_props():
     del bpy.types.Scene.export_option_gui
     del bpy.types.WindowManager.mesh_triangle_export_toggle
     del bpy.types.Scene.convert_mesh_to_triangles
-    
+
     del bpy.types.Scene.plugin_directory
     del bpy.types.Scene.export_file_name_o3de
 
@@ -122,7 +120,7 @@ class MessageBox(bpy.types.Operator):
         """
         layout = self.layout
         layout.label(text=bpy.types.Scene.pop_up_notes)
-        
+
     def execute(self, context):
         """!
         This will update the UI with the current o3de Project Title.
@@ -136,7 +134,7 @@ class MessageBoxConfirm(bpy.types.Operator):
     bl_idname = "message_confirm.popup"
     bl_label = "O3DE Scene Exporter"
     bl_options = {'REGISTER', 'INTERNAL'}
-    
+
     question_one: bpy.props.BoolProperty()
 
     @classmethod
@@ -152,7 +150,7 @@ class MessageBoxConfirm(bpy.types.Operator):
         layout.label(text=bpy.types.Scene.pop_up_confirm_label)
         layout.prop(self, "question_one", text=bpy.types.Scene.pop_up_question_label)
         bpy.types.Scene.pop_up_question_bool = self.question_one
-    
+
     def execute(self, context):
         """!
         This will update the UI with the current o3de Project Title.
@@ -173,7 +171,7 @@ class O3DE_OP_Export_Selected(bpy.types.Operator):
     bl_idname = "o3de.export_selected"
     bl_label = "O3DE Selection Exporter"
     bl_options = {'REGISTER', 'INTERNAL'}
-    
+
     @classmethod
     def poll(cls, context):
         return True
@@ -270,7 +268,7 @@ class O3DE_OP_Export_Selected(bpy.types.Operator):
         mesh_info.label(text=f"Physics Collider: {colliders}")
         mesh_info.label(text=f"LODS: {lods}")
         mesh_info.label(text=f"Export to Path: {bpy.types.Scene.selected_o3de_project_path}")
-    
+
     def export_files(self, file_name):
         """!
         This function will export the selected as an .fbx to the current project path.
@@ -279,7 +277,7 @@ class O3DE_OP_Export_Selected(bpy.types.Operator):
         # Add file ext
         file_name = f'{file_name}.fbx'
         fbx_exporter.fbx_file_exporter('', file_name)
-    
+
     def execute(self, context):
         """!
         This function will check the current selected count and multi_file_export_o3de bool is True or False.
@@ -322,20 +320,20 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
     bl_idname = "o3de.export_collection"
     bl_label = "O3DE Collection Exporter"
     bl_options = {'REGISTER', 'INTERNAL'}
-    
-    exportable : BoolProperty(default=False)
-    
+
+    exportable: BoolProperty(default=False)
+
     @classmethod
     def poll(cls, context):
         if context.scene.selected_o3de_project_path:
             return True
         else:
             return False
-        
+
     def invoke(self, context, event):
-            return context.window_manager.invoke_props_dialog(self)
-    
-    def export_files(self,context):
+        return context.window_manager.invoke_props_dialog(self)
+
+    def export_files(self, context):
         """!
         This function will export the selected as an .fbx to the current project path.
         @param file_name is the file name selected or string in export_file_name_o3de
@@ -344,34 +342,42 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
         # Add file ext
         # file_name = Path(f'{file_name}.fbx')
         # fbx_exporter.fbx_file_exporter('', file_name)
-        export_folder=Path(context.scene.selected_o3de_project_path).joinpath("Assets")
-        export_file=Path(context.scene.export_file_name_o3de).with_suffix(".fbx")
-        export_path=export_folder.joinpath(export_file).as_posix()
+        export_folder = Path(context.scene.selected_o3de_project_path).joinpath("Assets")
+        export_file = Path(context.scene.export_file_name_o3de).with_suffix(".fbx")
+        export_path = export_folder.joinpath(export_file).as_posix()
         fbx_exporter.fbx_export(file=export_path, context=context)
-    
+
         #GLTF
-        export_file=Path(context.scene.export_file_name_o3de).with_suffix(".gltf")
-        export_path=export_folder.joinpath(export_file).as_posix()
+        export_file = Path(context.scene.export_file_name_o3de).with_suffix(".gltf")
+        export_path = export_folder.joinpath(export_file).as_posix()
         gltf_exporter.gltf_export(file=export_path, context=context)
         print("Exporting -> ", export_path, export_folder, export_file)
-    
-    def execute(self,context):
+
+    def execute(self, context):
         """!
         This function will exports all the objects that are under the selected collection.
         """
-        C=context
-        scn=context.scene
-        col=bpy.data.collections[scn.o3de_export_collection]
-        col_objs=utils.get_collection_objects(col)
-        
+        C = context
+        scn = context.scene
+        col = bpy.data.collections[scn.o3de_export_collection]
+        col_objs = utils.get_collection_objects(col)
+        objs = utils.store_states(C)
+
+        utils.deselect_scene_objects(C)
         if col_objs:
-            utils.deselect_scene_objects(C)
             utils.select_objects(col_objs)
             #Make sure there is at least one active object from the collection
-            utils.set_active_object(C,col_objs[-1])
-            self.export_files(context)
+            utils.set_active_object(C, col_objs[-1])
+            self.export_files(C)
+
+        utils.deselect_scene_objects(C)
+        utils.select_objects(objs)
+        utils.set_active_object(C, objs[-1])
+
+
+
         return{'FINISHED'}
-    
+
     def draw(self, context):
         # if context.scene.selected_o3de_project_path:
         if context.scene.selected_o3de_project_path:
@@ -389,7 +395,7 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
             column = layout.column()
             row = column.row()
             row.label(text="Please select the O3DE project.", icon='WORLD_DATA')
-            
+
 
     def execute_(self, context):
         """!
@@ -480,7 +486,7 @@ class CustomProjectPath(bpy.types.Operator, ImportHelper):
             # Refesh the addon
             addon_utils.enable('SceneExporter')
             # Rebuild the project list
-            o3de_utils.build_projects_list() 
+            o3de_utils.build_projects_list()
         return {'FINISHED'}
 
 class AddColliderMesh(bpy.types.Operator):
@@ -541,7 +547,7 @@ class ProjectsListDropDown(bpy.types.Operator):
         """
         layout = self.layout
         layout.prop(context.scene, 'o3de_projects_list')
-        
+
     def execute(self, context):
         """!
         This will update the UI with the current o3de Project Title.
@@ -609,14 +615,14 @@ class ExportOptionsListDropDown(bpy.types.Operator):
         """
         window_manager = context.window_manager
         return window_manager.invoke_props_dialog(self)
-        
+
     def draw(self, context):
         """!
         This function draws this gui element in Blender UI
         """
         layout = self.layout
         layout.prop(context.scene, 'texture_options_list')
-        
+
     def execute(self, context):
         """!
         This function will Update Export Option Bool
@@ -628,7 +634,7 @@ class ExportOptionsListDropDown(bpy.types.Operator):
         else:
             bpy.types.Scene.export_textures_folder = None
         return {'FINISHED'}
-        
+
 class AnimationOptionsListDropDown(bpy.types.Operator):
     """!
     This Class is for the O3DE Export Animations UI List Drop Down
@@ -642,14 +648,14 @@ class AnimationOptionsListDropDown(bpy.types.Operator):
         """
         window_manager = context.window_manager
         return window_manager.invoke_props_dialog(self)
-        
+
     def draw(self, context):
         """!
         This function draws this gui element in Blender UI
         """
         layout = self.layout
         layout.prop(context.scene, 'animation_options_list')
-        
+
     def execute(self, context):
         """!
         This function will Update Export Option Bool
@@ -697,10 +703,10 @@ class O3deTools(Panel):
 
         # Look at the o3de Engine Manifest
         o3de_projects, engine_is_installed = o3de_utils.look_at_engine_manifest()
-        
+
         # Validate a selection
         valid_selection, selected_name = utils.check_selected()
-        
+
         # Validate selection bone names if any
         invalid_bone_names, bone_are_in_selected = utils.check_selected_bone_names()
 
@@ -719,9 +725,9 @@ class O3deTools(Panel):
             current_selected_options_row.label(text="CURRENT SELECTED", icon="OUTLINER_DATA_GP_LAYER")
             # Let user know how many objects are selected
             installed_lable = layout.row()
-            
+
             # Check if there are any selections
-            if len(name_selections) == 0: 
+            if len(name_selections) == 0:
                 installed_lable.label(text='Selected: None')
             else:
                 installed_lable.label(text=f'({len(selected_name)}) Selected: {selected_objects.name}')
@@ -733,10 +739,10 @@ class O3deTools(Panel):
                 project_path_label.label(text=f'Project: {project}')
             else:
                 project_path_label.label(text='Project: None')
-            
+
             # Check to see which Animation Action is active
             action_name, action_count = utils.check_for_animation_actions()
-            
+
             # Let user choose animation export options
             if bone_are_in_selected:
                 animation_action_lable = layout.row()
@@ -758,7 +764,7 @@ class O3deTools(Panel):
                 texture_export_option_label.label(text='Texture Export: With Model')
             elif bpy.types.Scene.export_textures_folder is None:
                 texture_export_option_label.label(text='Texture Export: Off')
-            
+
             # User selects projects folder path
             o3de_projects_row = layout.box()
             o3de_projects_row.label(text="PROJECTS", icon="EVENT_B")
@@ -769,7 +775,7 @@ class O3deTools(Panel):
                 o3de_projects_panel.operator('wm.projectlist', text='O3DE Projects', icon="OUTLINER")
             else:
                 o3de_projects_panel.operator('wm.projectlist', text='Select Project', icon="OUTLINER")
-                
+
 
             # Let user choose a custom project path
             local_project_path = layout.row()
@@ -778,7 +784,7 @@ class O3deTools(Panel):
             # User can add UDP
             user_defined_properties_row = layout.box()
             user_defined_properties_row.label(text="USER DEFINED (UDP)", icon="EVENT_C")
-            
+
             # Let user create a O3DE Collider Mesh for Physx
             create_collider_button = layout.row()
             create_collider_button.operator("vin.collider", text='Create PhysX Collider', icon="SNAP_VOLUME")
@@ -786,7 +792,7 @@ class O3deTools(Panel):
             # Let user create a O3DE LOD Mesh
             create_lod_button = layout.row()
             create_lod_button.operator("vin.lod", text='Create LOD', icon="MOD_REMESH")
-            
+
             # User selected export options
             o3de_projects_row = layout.box()
             o3de_projects_row.label(text="EXPORT OPTIONS", icon="EVENT_D")
@@ -794,7 +800,7 @@ class O3deTools(Panel):
             # This is the UI Texture Export Options List
             texture_export_options_panel = layout.row()
             texture_export_options_panel.operator('wm.exportoptions', text='Texture Export Options', icon="OUTPUT")
-            
+
             # This is the UI Animation Export Options List
             animation_export_options_panel = layout.row()
             animation_export_options_panel.operator('wm.animationoptions', text='Animation Export Options', icon="POSE_HLT")
@@ -819,7 +825,7 @@ class O3deTools(Panel):
                 bpy.types.Scene.convert_mesh_to_triangles = True
             else:
                 bpy.types.Scene.convert_mesh_to_triangles = False
-            
+
             # This checks to see if we should enable the export button
             export_row = layout.box()
             export_row.label(text="EXPORT FILE", icon="EVENT_E")
@@ -852,7 +858,7 @@ class O3deTools(Panel):
                 export_files_row.enabled = True
             # Final Export Files Button
             export_files_row.operator('o3de.export_selected', text='EXPORT TO O3DE', icon="BLENDER")
-        
+
             export_collection_row=layout.row()
             export_collection_row.enabled=True
             # export_collection_row.label(text='Export Collection')
@@ -861,14 +867,10 @@ class O3deTools(Panel):
             export_collection_row=layout.row()
             # export_collection_row.enabled=True
             export_collection_row.operator('o3de.export_collection', text='EXPORT COLLECTION', icon="BLENDER")
-            
-            
+
+
         else:
             # If O3DE is not installed we tell the user
             row.operator("vin.wiki", text='O3DE Tools Wiki', icon="WORLD_DATA")
             not_installed = layout.row()
             not_installed.label(text='O3DE Needs to be installed')
-            
-
-            
-
