@@ -327,8 +327,11 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
     
     @classmethod
     def poll(cls, context):
-        return True
-
+        if context.scene.selected_o3de_project_path:
+            return True
+        else:
+            return False
+        
     def invoke(self, context, event):
             return context.window_manager.invoke_props_dialog(self)
     
@@ -370,6 +373,7 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
         return{'FINISHED'}
     
     def draw(self, context):
+        # if context.scene.selected_o3de_project_path:
         if context.scene.selected_o3de_project_path:
             self.exportable=True
             layout = self.layout
@@ -689,6 +693,7 @@ class O3deTools(Panel):
         selected_objects = context.object
         wm = context.window_manager
         row = layout.row()
+        C=context
 
         # Look at the o3de Engine Manifest
         o3de_projects, engine_is_installed = o3de_utils.look_at_engine_manifest()
@@ -722,12 +727,12 @@ class O3deTools(Panel):
                 installed_lable.label(text=f'({len(selected_name)}) Selected: {selected_objects.name}')
 
             # Show which project path is the current
-            project_path_lable = layout.row()
+            project_path_label = layout.row()
             if not bpy.types.Scene.selected_o3de_project_path == '':
                 project = Path(bpy.types.Scene.selected_o3de_project_path).name
-                project_path_lable.label(text=f'Project: {project}')
+                project_path_label.label(text=f'Project: {project}')
             else:
-                project_path_lable.label(text='Project: None')
+                project_path_label.label(text='Project: None')
             
             # Check to see which Animation Action is active
             action_name, action_count = utils.check_for_animation_actions()
@@ -760,7 +765,11 @@ class O3deTools(Panel):
 
             # This is the UI Porjects List
             o3de_projects_panel = layout.row()
-            o3de_projects_panel.operator('wm.projectlist', text='O3DE Projects', icon="OUTLINER")
+            if C.scene.selected_o3de_project_path:
+                o3de_projects_panel.operator('wm.projectlist', text='O3DE Projects', icon="OUTLINER")
+            else:
+                o3de_projects_panel.operator('wm.projectlist', text='Select Project', icon="OUTLINER")
+                
 
             # Let user choose a custom project path
             local_project_path = layout.row()
