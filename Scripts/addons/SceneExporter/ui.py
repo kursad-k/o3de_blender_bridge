@@ -8,11 +8,12 @@
 #
 #
 # -------------------------------------------------------------------------
-import bpy
 import sys
 import webbrowser
 from pathlib import Path
 import re
+
+import bpy
 from bpy_extras.io_utils import ExportHelper, ImportHelper
 from bpy.types import Panel, Operator, PropertyGroup, AddonPreferences
 from bpy.props import EnumProperty, StringProperty, BoolProperty, PointerProperty
@@ -363,7 +364,9 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
         col_objs = utils.get_collection_objects(col)
         objs = utils.store_states(C)
 
-        utils.deselect_scene_objects(C)
+        # utils.deselect_scene_objects(C)
+        #Deselect all the objects in all scenes to go around the problem with the export which also exports nonactive scene objects
+        utils.deselect_all_objects(C)
         if col_objs:
             utils.select_objects(col_objs)
             #Make sure there is at least one active object from the collection

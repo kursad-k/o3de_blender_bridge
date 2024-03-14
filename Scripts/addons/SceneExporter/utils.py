@@ -40,6 +40,17 @@ def deselect_scene_objects(context):
     for o in objs:
         o.select_set(False)
 
+
+def deselect_all_objects(context):
+    """!
+    Deselect objects of the scene one by one. This is safer for headless or non-viewport calls.
+    """
+    C=context
+    D=bpy.data
+    objs=D.objects
+    for o in objs:
+        o.select_set(False)
+
 def get_active_collection():
     """!
     This will get the currently active collection in the scene's outliner
