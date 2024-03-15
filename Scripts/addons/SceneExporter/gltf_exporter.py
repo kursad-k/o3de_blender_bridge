@@ -64,7 +64,7 @@ def gltf_export(file=None,gscale=1.0,custom=None, context=bpy.context):
         C.scene.frame_end=c_frame
 
         bpy.ops.export_scene.gltf(filepath=file, export_format='GLTF_SEPARATE', use_renderable=True, use_active_scene=True, use_selection=True, 
-                                    use_visible=True, export_apply=True, export_yup=False, export_bake_animation=True, export_gpu_instances=True)
+                                    use_visible=True, export_apply=True, export_yup=False, export_bake_animation=True, export_image_format='AUTO')
         #export_selected=True (I got a warning here)
 
         #Restore frames

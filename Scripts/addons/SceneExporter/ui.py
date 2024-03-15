@@ -32,6 +32,8 @@ def register_props():
     bpy.types.Scene.o3de_export_collection = bpy.props.EnumProperty(name="export_colection",
                                                                 description="collection to export",items=utils.get_collection_list)
 
+    bpy.types.Scene.separate_files_export_toggle = bpy.props.BoolProperty(name="Separate Files" ,default=True)
+    
     bpy.types.Scene.selected_o3de_project_path = ''
     bpy.types.Scene.pop_up_notes = ''
     bpy.types.Scene.pop_up_confirm_label = ''
@@ -85,6 +87,7 @@ def delete_props():
 
     del bpy.types.Scene.plugin_directory
     del bpy.types.Scene.export_file_name_o3de
+    del bpy.types.Scene.separate_files_export_toggle
 
 
 def message_box(message = "", title = "Message Box", icon = 'LIGHT'):
@@ -364,7 +367,7 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
         print("Exporting -> ", export_path, export_folder, export_file)
 
 
-    def export_files(self, context):
+    def export_files(self, context, name=""):
         """!
         This function will export the selected as an .fbx to the current project path.
         @param file_name is the file name selected or string in export_file_name_o3de
@@ -379,6 +382,9 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
         project_path=S.selected_o3de_project_path
         folder_name=S.export_file_name_o3de
         file_name=folder_name
+        if name:
+            file_name=name
+        
         ext=".fbx"
         export_folder = Path(project_path).joinpath("Assets")
         export_folder = export_folder.joinpath(folder_name)
@@ -406,19 +412,28 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
         This function will exports all the objects that are under the selected collection.
         """
         C = context
-        scn = context.scene
-        col = bpy.data.collections[scn.o3de_export_collection]
+        S = C.scene
+        D= bpy.data
+        col = D.collections[S.o3de_export_collection]
         col_objs = utils.get_collection_objects(col)
         objs = utils.store_states(C)
 
         # utils.deselect_scene_objects(C)
         #Deselect all the objects in all scenes to go around the problem with the export which also exports nonactive scene objects
-        utils.deselect_all_objects(C)
         if col_objs:
-            utils.select_objects(col_objs)
             #Make sure there is at least one active object from the collection
-            utils.set_active_object(C, col_objs[-1])
-            self.export_files(C)
+            utils.deselect_all_objects(C)
+            
+            if S.separate_files_export_toggle:
+                for ob in col_objs:
+                    # utils.select_object(obj)
+                    utils.set_active_object(C,ob)
+                    self.export_files(C,name=ob.name)
+                    utils.deselect_object(ob)
+            else:
+                utils.select_objects(col_objs)
+                utils.set_active_object(C, col_objs[-1])
+                self.export_files(C)
 
         utils.deselect_scene_objects(C)
         utils.select_objects(objs)
@@ -914,6 +929,8 @@ class O3deTools(Panel):
             # export_collection_row.enabled=True
 
             export_collection_row.prop(context.scene, "o3de_export_collection", text='EXPORT COLLECTION', icon="COLLECTION_COLOR_04")
+            export_collection_row=layout.row()
+            export_collection_row.prop(context.scene, "separate_files_export_toggle", text='Separate Files', icon="FILE_3D")
             export_collection_row=layout.row()
             export_collection_row.operator('o3de.export_collection', text='EXPORT COLLECTION', icon="BLENDER")
 

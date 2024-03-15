@@ -41,6 +41,13 @@ def deselect_scene_objects(context):
         o.select_set(False)
 
 
+def deselect_object(obj):
+    """!
+    Deselect the given object
+    """
+    obj.select_set(False)
+
+
 def deselect_all_objects(context):
     """!
     Deselect objects of the scene one by one. This is safer for headless or non-viewport calls.
