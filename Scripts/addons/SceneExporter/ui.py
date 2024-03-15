@@ -334,6 +334,36 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
     def invoke(self, context, event):
         return context.window_manager.invoke_props_dialog(self)
 
+    def export_file(self, context, obj):
+        """!
+        This function will export the selected as an .fbx to the current project path.
+        @param file_name is the file name selected or string in export_file_name_o3de
+        """
+        #FBX
+        # Add file ext
+        # file_name = Path(f'{file_name}.fbx')
+        # fbx_exporter.fbx_file_exporter('', file_name)
+        C=context
+        S=context.scene
+        project_path=S.selected_o3de_project_path
+        folder_name=S.export_file_name_o3de
+        file_name=obj.name
+        ext=".fbx"
+        export_folder = Path(project_path).joinpath("Assets")
+        export_folder = export_folder.joinpath(folder_name)
+        export_file = Path(file_name).with_suffix(ext)
+        export_path = export_folder.joinpath(export_file).as_posix()
+        fbx_exporter.fbx_export(file=export_path, context=context)
+
+        #GLTF
+        ext=".gltf"
+        # export_file = Path(context.scene.export_file_name_o3de).with_suffix(".gltf")
+        # export_path = export_folder.joinpath(export_file).as_posix()
+        export_path = export_path.with_suffix(ext).as_posix()
+        gltf_exporter.gltf_export(file=export_path, context=context)
+        print("Exporting -> ", export_path, export_folder, export_file)
+
+
     def export_files(self, context):
         """!
         This function will export the selected as an .fbx to the current project path.
@@ -343,16 +373,33 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
         # Add file ext
         # file_name = Path(f'{file_name}.fbx')
         # fbx_exporter.fbx_file_exporter('', file_name)
-        export_folder = Path(context.scene.selected_o3de_project_path).joinpath("Assets")
-        export_file = Path(context.scene.export_file_name_o3de).with_suffix(".fbx")
-        export_path = export_folder.joinpath(export_file).as_posix()
-        fbx_exporter.fbx_export(file=export_path, context=context)
+        
+        C=context
+        S=context.scene
+        project_path=S.selected_o3de_project_path
+        folder_name=S.export_file_name_o3de
+        file_name=folder_name
+        ext=".fbx"
+        export_folder = Path(project_path).joinpath("Assets")
+        export_folder = export_folder.joinpath(folder_name)
+        try:
+            if not export_folder.exists():
+                export_folder.mkdir(parents=True, exist_ok=True)
+                    
+            export_file = Path(file_name).with_suffix(ext)
+            export_path = export_folder.joinpath(export_file)
+            fbx_exporter.fbx_export(file=export_path.as_posix(), context=context)
 
-        #GLTF
-        export_file = Path(context.scene.export_file_name_o3de).with_suffix(".gltf")
-        export_path = export_folder.joinpath(export_file).as_posix()
-        gltf_exporter.gltf_export(file=export_path, context=context)
-        print("Exporting -> ", export_path, export_folder, export_file)
+            #GLTF
+            ext=".gltf"
+            # export_file = Path(context.scene.export_file_name_o3de).with_suffix(".gltf")
+            # export_path = export_folder.joinpath(export_file).as_posix()
+            export_path = export_path.with_suffix(ext)
+            gltf_exporter.gltf_export(file=export_path.as_posix(), context=context)
+            print("Exporting -> ", export_path.as_posix(), export_folder, export_file)
+
+        except OSError as e:
+            print(e)
 
     def execute(self, context):
         """!
@@ -376,8 +423,6 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
         utils.deselect_scene_objects(C)
         utils.select_objects(objs)
         utils.set_active_object(C, objs[-1])
-
-
 
         return{'FINISHED'}
 
@@ -866,9 +911,10 @@ class O3deTools(Panel):
             export_collection_row.enabled=True
             # export_collection_row.label(text='Export Collection')
             # export_collection_row.operator('vin.report_card_button', text='EXPORT COLLECTION', icon="BLENDER")
+            # export_collection_row.enabled=True
+
             export_collection_row.prop(context.scene, "o3de_export_collection", text='EXPORT COLLECTION', icon="COLLECTION_COLOR_04")
             export_collection_row=layout.row()
-            # export_collection_row.enabled=True
             export_collection_row.operator('o3de.export_collection', text='EXPORT COLLECTION', icon="BLENDER")
 
 

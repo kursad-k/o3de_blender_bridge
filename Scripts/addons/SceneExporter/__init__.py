@@ -63,19 +63,35 @@ from . import ui
 from . import constants
 
 
-if locals().get('loaded'):
-    loaded = False
-    from importlib import reload
-    from sys import modules
+# if locals().get('loaded'):
+#     loaded = False
+#     from importlib import reload
+#     from sys import modules
 
-    modules[__name__] = reload(modules[__name__])
-    for name, module in modules.items():
-        if name.startswith(f"{__package__}."):
-            globals()[name] = reload(module)
-    del reload, modules
+#     modules[__name__] = reload(modules[__name__])
+#     for name, module in modules.items():
+#         if name.startswith(f"{__package__}."):
+#             globals()[name] = reload(module)
+#     del reload, modules
 
 
+#Module reloads for iterative development
+import importlib
 
+modules=["gltf_exporter",
+        "o3de_utils",
+        "ui",
+        "utils",
+        "constants",
+        "fbx_exporter"
+        ]
+
+for m in modules:
+    if m in locals():
+        importlib.reload(eval(m))
+    else:
+        from . import m
+        
 classes = (
     ui.O3deTools,
     ui.MessageBox,
