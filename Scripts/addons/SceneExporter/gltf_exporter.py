@@ -19,7 +19,7 @@ def _gltf_export_(file=None,gscale=1.0,custom=None, context=bpy.context):
     for i in range(5):
         print("EXPORTING GLTF")
         
-def gltf_export(file=None,gscale=1.0,custom=None, context=bpy.context):
+def gltf_export(file=None,gscale=1.0,custom=None, image_exports='AUTO', context=bpy.context):
     """!
         filepath='', check_existing=True, export_import_convert_lighting_mode='SPEC', 
         gltf_export_id='', export_format='GLB', ui_tab='GENERAL', export_copyright='', 
@@ -64,7 +64,8 @@ def gltf_export(file=None,gscale=1.0,custom=None, context=bpy.context):
         C.scene.frame_end=c_frame
 
         bpy.ops.export_scene.gltf(filepath=file, export_format='GLTF_SEPARATE', use_renderable=True, use_active_scene=True, use_selection=True, 
-                                    use_visible=True, export_apply=True, export_yup=False, export_bake_animation=True, export_image_format='AUTO')
+                                    use_visible=True, export_apply=True, export_yup=False, export_bake_animation=True, export_image_format=image_exports,
+                                    export_rest_position_armature=False, export_keep_originals=False)
         #export_selected=True (I got a warning here)
 
         #Restore frames

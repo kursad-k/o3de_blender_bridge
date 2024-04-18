@@ -165,4 +165,4 @@ def unregister():
 if __name__ == "__main__":
     register()
 
-loaded = True
+# loaded = True

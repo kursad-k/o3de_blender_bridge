@@ -1,5 +1,7 @@
 __pycache__
 __tmp__
+_test_scenes
+_vers
 *.pyc
 *.pyo
 # Ignore dynaconf secret files

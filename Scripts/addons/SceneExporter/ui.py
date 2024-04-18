@@ -33,6 +33,7 @@ def register_props():
                                                                 description="collection to export",items=utils.get_collection_list)
 
     bpy.types.Scene.separate_files_export_toggle = bpy.props.BoolProperty(name="Separate Files" ,default=True)
+    bpy.types.Scene.textures_export_toggle = bpy.props.BoolProperty(name="With Textures" ,default=True)
     
     bpy.types.Scene.selected_o3de_project_path = ''
     bpy.types.Scene.pop_up_notes = ''
@@ -388,6 +389,9 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
         ext=".fbx"
         export_folder = Path(project_path).joinpath("Assets")
         export_folder = export_folder.joinpath(folder_name)
+        
+        with_images='AUTO'
+        
         try:
             if not export_folder.exists():
                 export_folder.mkdir(parents=True, exist_ok=True)
@@ -395,13 +399,15 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
             export_file = Path(file_name).with_suffix(ext)
             export_path = export_folder.joinpath(export_file)
             fbx_exporter.fbx_export(file=export_path.as_posix(), context=context)
-
             #GLTF
+
             ext=".gltf"
             # export_file = Path(context.scene.export_file_name_o3de).with_suffix(".gltf")
             # export_path = export_folder.joinpath(export_file).as_posix()
+            
+            with_images='AUTO' if S.textures_export_toggle else 'NONE'
             export_path = export_path.with_suffix(ext)
-            gltf_exporter.gltf_export(file=export_path.as_posix(), context=context)
+            gltf_exporter.gltf_export(file=export_path.as_posix(), image_exports=with_images, context=context)
             print("Exporting -> ", export_path.as_posix(), export_folder, export_file)
 
         except OSError as e:
@@ -418,6 +424,8 @@ class O3DE_OP_Export_Collection(bpy.types.Operator):
         col_objs = utils.get_collection_objects(col)
         objs = utils.store_states(C)
 
+        # with_images=['NONE','AUTO'] [S.textures_export_toggle==True]
+        
         # utils.deselect_scene_objects(C)
         #Deselect all the objects in all scenes to go around the problem with the export which also exports nonactive scene objects
         if col_objs:
@@ -931,6 +939,7 @@ class O3deTools(Panel):
             export_collection_row.prop(context.scene, "o3de_export_collection", text='EXPORT COLLECTION', icon="COLLECTION_COLOR_04")
             export_collection_row=layout.row()
             export_collection_row.prop(context.scene, "separate_files_export_toggle", text='Separate Files', icon="FILE_3D")
+            export_collection_row.prop(context.scene, "textures_export_toggle", text='With textures', icon="IMAGE_RGB")
             export_collection_row=layout.row()
             export_collection_row.operator('o3de.export_collection', text='EXPORT COLLECTION', icon="BLENDER")
 
