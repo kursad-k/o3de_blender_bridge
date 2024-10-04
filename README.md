@@ -4,9 +4,9 @@ This repository is for continuing the work on the O3DE->Blender bridge. This add
 
 - [ ] (WIP) Change the license to Blender compliant GPL license.
 
-- [ ] (WIP) Collections based workflow. 
+- [x] (WIP) Collections based workflow. 
 
-- [ ] (WIP) GLTF support. 
+- [x] (WIP) GLTF support. 
 
 - [ ] Flatten multiple actions into a single animation channel for the export.
 
